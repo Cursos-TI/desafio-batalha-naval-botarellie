@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h> // para abs()
 
 // Desafio Batalha Naval - MateCheck
 // Este código inicial serve como base para o desenvolvimento do sistema de Batalha Naval.
@@ -90,82 +91,166 @@ int main() {
     //int i, j;
 
     // Cone (3x5)
-    int cone[3][5] = {0};
-    for (i = 0; i < 3; i++) {
-        for (j = 0; j < 5; j++) {
-            if (i == 0 && j == 2) cone[i][j] = 1;           // topo
-            if (i == 1 && (j == 1 || j == 2 || j == 3))     // meio
+    // int cone[3][5] = {0};
+    // for (i = 0; i < 3; i++) {
+    //     for (j = 0; j < 5; j++) {
+    //         if (i == 0 && j == 2) cone[i][j] = 1;           // topo
+    //         if (i == 1 && (j == 1 || j == 2 || j == 3))     // meio
+    //             cone[i][j] = 1;
+    //         if (i == 2) cone[i][j] = 1;                     // base cheia
+    //     }
+    // }
+
+    // // Cruz (3x5)
+    // int cruz[3][5] = {0};
+    // for (i = 0; i < 3; i++) {
+    //     for (j = 0; j < 5; j++) {
+    //         if (i == 1 || j == 2) { // linha central e coluna central
+    //             cruz[i][j] = 1;
+    //         }
+    //     }
+    // }
+
+    // // Octaedro (3x5)
+    // int octa[3][5] = {0};
+    // for (i = 0; i < 3; i++) {
+    //     for (j = 0; j < 5; j++) {
+    //         if ((i == 0 && j == 2) ||
+    //             (i == 1 && (j == 1 || j == 3)) ||
+    //             (i == 2 && j == 2)) {
+    //             octa[i][j] = 1;
+    //         }
+    //     }
+    // }
+
+    // // Exibir Cone
+    // printf("Cone:\n");
+    // for (i = 0; i < 3; i++) {
+    //     for (j = 0; j < 5; j++) {
+    //         printf("%d ", cone[i][j]);
+    //     }
+    //     printf("\n");
+    // }
+
+    // // Exibir Cruz
+    // printf("\nCruz:\n");
+    // for (i = 0; i < 3; i++) {
+    //     for (j = 0; j < 5; j++) {
+    //         printf("%d ", cruz[i][j]);
+    //     }
+    //     printf("\n");
+    // }
+
+    // // Exibir Octaedro
+    // printf("\nOctaedro:\n");
+    // for (i = 0; i < 3; i++) {
+    //     for (j = 0; j < 5; j++) {
+    //         printf("%d ", octa[i][j]);
+    //     }
+    //     printf("\n");
+    // }
+
+
+
+    /* Declara as veriávels dos símbolos */
+    int cone[5][5];
+    int cruz[5][5];
+    int octaedro[5][5];
+
+    /* Inicializa o tabuleiro com água (0) */
+    for(i = 0; i < 10; i++) {
+        for(j = 0; j < 10; j++) {
+            tabuleiro[i][j] = 0;
+        }
+    }
+
+    /* Coloca alguns navios (3) */
+    tabuleiro[2][2] = 3;
+    tabuleiro[4][4] = 3;
+    tabuleiro[7][5] = 3;
+
+    /* ====== MATRIZ CONE ====== */
+    for(i = 0; i < 5; i++) {
+        for(j = 0; j < 5; j++) {
+            if(j >= 2 - i && j <= 2 + i)
                 cone[i][j] = 1;
-            if (i == 2) cone[i][j] = 1;                     // base cheia
+            else
+                cone[i][j] = 0;
         }
     }
 
-    // Cruz (3x5)
-    int cruz[3][5] = {0};
-    for (i = 0; i < 3; i++) {
-        for (j = 0; j < 5; j++) {
-            if (i == 1 || j == 2) { // linha central e coluna central
+    /* ====== MATRIZ CRUZ ====== */
+    for(i = 0; i < 5; i++) {
+        for(j = 0; j < 5; j++) {
+            if(i == 2 || j == 2)
                 cruz[i][j] = 1;
+            else
+                cruz[i][j] = 0;
+        }
+    }
+
+    /* ====== MATRIZ OCTAEDRO ====== */
+    for(i = 0; i < 5; i++) {
+        for(j = 0; j < 5; j++) {
+            if(abs(i - 2) + abs(j - 2) <= 2)
+                octaedro[i][j] = 1;
+            else
+                octaedro[i][j] = 0;
+        }
+    }
+
+    /* ====== ORIGENS DAS HABILIDADES (variáveis) ====== */
+    int linCone = 1, colCone = 4;
+    int linCruz = 5, colCruz = 5;
+    int linOcta = 7, colOcta = 2;
+
+    /* ====== SOBREPOR CONE ====== */
+    for(i = 0; i < 5; i++) {
+        for(j = 0; j < 5; j++) {
+            if(cone[i][j] == 1) {
+                int l = linCone - 2 + i;
+                int c = colCone - 2 + j;
+                if(tabuleiro[l][c] == 0) {
+                    tabuleiro[l][c] = 5;
+                }
             }
         }
     }
 
-    // Octaedro (3x5)
-    int octa[3][5] = {0};
-    for (i = 0; i < 3; i++) {
-        for (j = 0; j < 5; j++) {
-            if ((i == 0 && j == 2) ||
-                (i == 1 && (j == 1 || j == 3)) ||
-                (i == 2 && j == 2)) {
-                octa[i][j] = 1;
+    /* ====== SOBREPOR CRUZ ====== */
+    for(i = 0; i < 5; i++) {
+        for(j = 0; j < 5; j++) {
+            if(cruz[i][j] == 1) {
+                int l = linCruz - 2 + i;
+                int c = colCruz - 2 + j;
+                if(tabuleiro[l][c] == 0) {
+                    tabuleiro[l][c] = 5;
+                }
             }
         }
     }
 
-    // Exibir Cone
-    printf("Cone:\n");
-    for (i = 0; i < 3; i++) {
-        for (j = 0; j < 5; j++) {
-            printf("%d ", cone[i][j]);
+    /* ====== SOBREPOR OCTAEDRO ====== */
+    for(i = 0; i < 5; i++) {
+        for(j = 0; j < 5; j++) {
+            if(octaedro[i][j] == 1) {
+                int l = linOcta - 2 + i;
+                int c = colOcta - 2 + j;
+                if(tabuleiro[l][c] == 0) {
+                    tabuleiro[l][c] = 5;
+                }
+            }
+        }
+    }
+
+    /* ====== EXIBIR TABULEIRO ====== */
+    printf("Legenda: 0 = agua | 3 = navio | 5 = habilidade\n\n");
+    for(i = 0; i < 10; i++) {
+        for(j = 0; j < 10; j++) {
+            printf("%d ", tabuleiro[i][j]);
         }
         printf("\n");
     }
-
-    // Exibir Cruz
-    printf("\nCruz:\n");
-    for (i = 0; i < 3; i++) {
-        for (j = 0; j < 5; j++) {
-            printf("%d ", cruz[i][j]);
-        }
-        printf("\n");
-    }
-
-    // Exibir Octaedro
-    printf("\nOctaedro:\n");
-    for (i = 0; i < 3; i++) {
-        for (j = 0; j < 5; j++) {
-            printf("%d ", octa[i][j]);
-        }
-        printf("\n");
-    }
-
-
-
-    // Exemplos de exibição das habilidades:
-    // Exemplo para habilidade em cone:
-    // 0 0 1 0 0
-    // 0 1 1 1 0
-    // 1 1 1 1 1
-    
-    // Exemplo para habilidade em octaedro:
-    // 0 0 1 0 0
-    // 0 1 1 1 0
-    // 0 0 1 0 0
-
-    // Exemplo para habilidade em cruz:
-    // 0 0 1 0 0
-    // 1 1 1 1 1
-    // 0 0 1 0 0
 
     return 0;
 }
